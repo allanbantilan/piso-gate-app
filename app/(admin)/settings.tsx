@@ -7,6 +7,7 @@ import {
   TextInput,
   View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { getPresets, updatePresets } from "@/services/settingsService";
@@ -79,8 +80,9 @@ export default function AdminSettingsScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Settings</Text>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <Text style={styles.title}>Settings</Text>
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Quick Presets (Minutes)</Text>
@@ -120,14 +122,19 @@ export default function AdminSettingsScreen() {
       <Pressable style={styles.primaryButton} onPress={onSave}>
         <Text style={styles.primaryButtonText}>Save Settings</Text>
       </Pressable>
-      <Pressable style={styles.backButton} onPress={() => router.replace("/(admin)/dashboard")}>
-        <Text style={styles.backButtonText}>Back to Dashboard</Text>
-      </Pressable>
-    </ScrollView>
+        <Pressable style={styles.backButton} onPress={() => router.replace("/(admin)/dashboard")}>
+          <Text style={styles.backButtonText}>Back to Dashboard</Text>
+        </Pressable>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f8fafc"
+  },
   container: {
     flex: 1,
     backgroundColor: "#f8fafc"

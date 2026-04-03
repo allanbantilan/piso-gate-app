@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { getDeviceId } from "@/services/deviceService";
 import { useDeviceSession } from "@/hooks/useDeviceSession";
 import { useHeartbeat } from "@/hooks/useHeartbeat";
@@ -35,20 +36,26 @@ export default function LockedScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Device Locked</Text>
-      <Text style={styles.body}>Waiting for admin to start your session.</Text>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Device Locked</Text>
+        <Text style={styles.body}>Waiting for admin to start your session.</Text>
 
-      <Pressable
-        style={styles.hiddenHitbox}
-        delayLongPress={ADMIN_LONG_PRESS_MS}
-        onLongPress={() => router.push("/(admin)/login")}
-      />
-    </View>
+        <Pressable
+          style={styles.hiddenHitbox}
+          delayLongPress={ADMIN_LONG_PRESS_MS}
+          onLongPress={() => router.push("/(admin)/login")}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#111827"
+  },
   container: {
     flex: 1,
     alignItems: "center",

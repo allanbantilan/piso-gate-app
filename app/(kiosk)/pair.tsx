@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { registerDevice } from "@/services/deviceService";
 import { ADMIN_LONG_PRESS_MS } from "@/constants/config";
 
@@ -26,14 +27,19 @@ export default function PairScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <StatusBar barStyle="dark-content" backgroundColor="#f7fafc" />
+      <View style={styles.container}>
+      <View style={styles.topBar}>
       <Pressable
         style={styles.adminTopButton}
         onPress={() => router.push("/(admin)/login")}
       >
         <Text style={styles.adminTopButtonText}>Admin Login</Text>
       </Pressable>
+      </View>
 
+      <View style={styles.centerContent}>
       <Text style={styles.title}>Pair Device</Text>
       <Text style={styles.subtitle}>Enter the code from Admin Dashboard</Text>
 
@@ -56,22 +62,36 @@ export default function PairScreen() {
       <Pressable style={styles.button} onPress={onSubmit} disabled={submitting}>
         <Text style={styles.buttonText}>{submitting ? "Pairing..." : "Pair Device"}</Text>
       </Pressable>
+      </View>
 
       <Pressable
         style={styles.hiddenHitbox}
         delayLongPress={ADMIN_LONG_PRESS_MS}
         onLongPress={() => router.push("/(admin)/login")}
       />
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f7fafc"
+  },
   container: {
     flex: 1,
-    padding: 24,
-    justifyContent: "center",
+    paddingHorizontal: 24,
+    paddingBottom: 24,
     backgroundColor: "#f7fafc"
+  },
+  topBar: {
+    alignItems: "flex-end",
+    paddingTop: 8
+  },
+  centerContent: {
+    flex: 1,
+    justifyContent: "center"
   },
   title: {
     fontSize: 28,
@@ -110,8 +130,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: "#cbd5e1",
-    backgroundColor: "#ffffff",
+    borderColor: "#94a3b8",
+    backgroundColor: "rgba(15, 23, 42, 0.04)",
     justifyContent: "center",
     alignItems: "center"
   },

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export default function AdminLoginScreen() {
@@ -27,28 +28,34 @@ export default function AdminLoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Admin Login</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter PIN"
-        value={pin}
-        onChangeText={setPin}
-        keyboardType="number-pad"
-        secureTextEntry
-      />
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Pressable style={styles.button} onPress={onLogin}>
-        <Text style={styles.buttonText}>{submitting ? "Checking..." : "Login"}</Text>
-      </Pressable>
-      <Pressable onPress={() => router.replace("/(kiosk)/locked")}>
-        <Text style={styles.cancel}>Back to Kiosk</Text>
-      </Pressable>
-    </View>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Admin Login</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter PIN"
+          value={pin}
+          onChangeText={setPin}
+          keyboardType="number-pad"
+          secureTextEntry
+        />
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <Pressable style={styles.button} onPress={onLogin}>
+          <Text style={styles.buttonText}>{submitting ? "Checking..." : "Login"}</Text>
+        </Pressable>
+        <Pressable onPress={() => router.replace("/(kiosk)/locked")}>
+          <Text style={styles.cancel}>Back to Kiosk</Text>
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f1f5f9"
+  },
   container: {
     flex: 1,
     justifyContent: "center",

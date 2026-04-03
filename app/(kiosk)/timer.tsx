@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { BackHandler, Pressable, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { getDeviceId } from "@/services/deviceService";
 import { useDeviceSession } from "@/hooks/useDeviceSession";
 import { useHeartbeat } from "@/hooks/useHeartbeat";
@@ -52,26 +53,32 @@ export default function TimerScreen() {
     remainingSeconds > 0 && remainingSeconds <= TEN_MINUTES_SECONDS;
 
   return (
-    <View style={styles.container}>
-      {showWarning ? (
-        <View style={styles.warningBanner}>
-          <Text style={styles.warningText}>Only 10 minutes left. Time is almost up.</Text>
-        </View>
-      ) : null}
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <View style={styles.container}>
+        {showWarning ? (
+          <View style={styles.warningBanner}>
+            <Text style={styles.warningText}>Only 10 minutes left. Time is almost up.</Text>
+          </View>
+        ) : null}
 
-      <Text style={styles.label}>Time Remaining</Text>
-      <Text style={styles.timer}>{formatSecondsToClock(remainingSeconds)}</Text>
+        <Text style={styles.label}>Time Remaining</Text>
+        <Text style={styles.timer}>{formatSecondsToClock(remainingSeconds)}</Text>
 
-      <Pressable
-        style={styles.hiddenHitbox}
-        delayLongPress={ADMIN_LONG_PRESS_MS}
-        onLongPress={() => router.push("/(admin)/login")}
-      />
-    </View>
+        <Pressable
+          style={styles.hiddenHitbox}
+          delayLongPress={ADMIN_LONG_PRESS_MS}
+          onLongPress={() => router.push("/(admin)/login")}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#0f172a"
+  },
   container: {
     flex: 1,
     alignItems: "center",

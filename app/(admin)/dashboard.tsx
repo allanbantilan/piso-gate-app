@@ -7,6 +7,7 @@ import {
   TextInput,
   View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
 import { api } from "@/convex/_generated/api";
@@ -74,8 +75,9 @@ export default function AdminDashboardScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Admin Dashboard</Text>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <Text style={styles.title}>Admin Dashboard</Text>
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Pair New Device</Text>
@@ -167,11 +169,16 @@ export default function AdminDashboardScreen() {
           <Text style={styles.linkText}>Logout</Text>
         </Pressable>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#eef2ff"
+  },
   container: {
     flex: 1,
     backgroundColor: "#eef2ff"
