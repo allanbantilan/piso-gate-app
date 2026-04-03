@@ -32,6 +32,7 @@ export default function AdminDashboardScreen() {
 
   const [pairingCode, setPairingCode] = useState<{ code: string; expiresAt: number } | null>(null);
   const [pairingError, setPairingError] = useState<string | null>(null);
+  const [isGeneratingPairCode, setIsGeneratingPairCode] = useState(false);
   const [customMinutes, setCustomMinutes] = useState("60");
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -48,12 +49,16 @@ export default function AdminDashboardScreen() {
   }, [customMinutes]);
 
   const onGeneratePairCode = async () => {
+    if (isGeneratingPairCode) return;
+    setIsGeneratingPairCode(true);
     try {
       setPairingError(null);
       const result = await createCode({});
       setPairingCode(result);
     } catch (err) {
       setPairingError(err instanceof Error ? err.message : "Failed to generate code");
+    } finally {
+      setIsGeneratingPairCode(false);
     }
   };
 
@@ -81,8 +86,14 @@ export default function AdminDashboardScreen() {
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Pair New Device</Text>
-        <Pressable style={styles.primaryButton} onPress={onGeneratePairCode}>
-          <Text style={styles.primaryButtonText}>Generate Pairing Code</Text>
+        <Pressable
+          style={[styles.primaryButton, isGeneratingPairCode && styles.buttonDisabled]}
+          onPress={onGeneratePairCode}
+          disabled={isGeneratingPairCode}
+        >
+          <Text style={styles.primaryButtonText}>
+            {isGeneratingPairCode ? "Generating..." : "Generate Pairing Code"}
+          </Text>
         </Pressable>
         {pairingCode ? (
           <Text style={styles.meta}>
@@ -211,6 +222,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#3730a3",
     paddingVertical: 10,
     alignItems: "center"
+  },
+  buttonDisabled: {
+    opacity: 0.6
   },
   primaryButtonText: {
     color: "white",

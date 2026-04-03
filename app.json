@@ -10,6 +10,15 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ae97af5a-3d0f-48d7-a88a-029a54fec0f1"
+      }
+    },
+    "android": {
+      "package": "com.allandev123.pisogateapp"
     }
   }
 }

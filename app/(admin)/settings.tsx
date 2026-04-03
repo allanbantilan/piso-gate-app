@@ -25,6 +25,7 @@ export default function AdminSettingsScreen() {
   const [pin, setPin] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -56,11 +57,14 @@ export default function AdminSettingsScreen() {
   };
 
   const onSave = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
     setError(null);
     setStatus(null);
     const parsed = presetsMinutes.map(parseMinutesInput);
     if (parsed.some((x) => x === null)) {
       setError("Each preset must be a positive number of minutes");
+      setIsSaving(false);
       return;
     }
 
@@ -76,6 +80,8 @@ export default function AdminSettingsScreen() {
       setStatus("Settings saved");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save settings");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -99,7 +105,11 @@ export default function AdminSettingsScreen() {
             </Pressable>
           </View>
         ))}
-        <Pressable style={styles.secondaryButton} onPress={addPreset}>
+        <Pressable
+          style={[styles.secondaryButton, isSaving && styles.buttonDisabled]}
+          onPress={addPreset}
+          disabled={isSaving}
+        >
           <Text style={styles.secondaryButtonText}>Add Preset</Text>
         </Pressable>
       </View>
@@ -119,10 +129,18 @@ export default function AdminSettingsScreen() {
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {status ? <Text style={styles.status}>{status}</Text> : null}
 
-      <Pressable style={styles.primaryButton} onPress={onSave}>
-        <Text style={styles.primaryButtonText}>Save Settings</Text>
+      <Pressable
+        style={[styles.primaryButton, isSaving && styles.buttonDisabled]}
+        onPress={onSave}
+        disabled={isSaving}
+      >
+        <Text style={styles.primaryButtonText}>{isSaving ? "Saving..." : "Save Settings"}</Text>
       </Pressable>
-        <Pressable style={styles.backButton} onPress={() => router.replace("/(admin)/dashboard")}>
+        <Pressable
+          style={[styles.backButton, isSaving && styles.buttonDisabled]}
+          onPress={() => router.replace("/(admin)/dashboard")}
+          disabled={isSaving}
+        >
           <Text style={styles.backButtonText}>Back to Dashboard</Text>
         </Pressable>
       </ScrollView>
@@ -198,6 +216,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#0f766e",
     paddingVertical: 12,
     alignItems: "center"
+  },
+  buttonDisabled: {
+    opacity: 0.6
   },
   primaryButtonText: {
     color: "white",
