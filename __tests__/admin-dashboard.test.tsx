@@ -21,6 +21,7 @@ jest.mock("expo-router", () => ({
 }));
 
 jest.mock("convex/react", () => ({
+  ConvexReactClient: jest.fn(),
   useQuery: (...args: unknown[]) => mockUseQuery(...args),
   useMutation: (...args: unknown[]) => mockUseMutation(...args)
 }));
@@ -31,6 +32,11 @@ jest.mock("@/hooks/useAdminAuth", () => ({
     isAuthenticated: true,
     signOut: mockSignOut
   })
+}));
+
+jest.mock("@/services/convexClient", () => ({
+  isConvexConfigured: true,
+  convexConfigErrorMessage: ""
 }));
 
 describe("Admin dashboard", () => {

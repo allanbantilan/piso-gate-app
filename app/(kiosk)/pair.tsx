@@ -46,15 +46,23 @@ export default function PairScreen() {
       <TextInput
         style={styles.input}
         placeholder="Pairing Code"
+        placeholderTextColor="#64748b"
         value={code}
         autoCapitalize="characters"
         onChangeText={setCode}
+        selectionColor="#0f766e"
+        cursorColor="#0f766e"
+        underlineColorAndroid="transparent"
       />
       <TextInput
         style={styles.input}
         placeholder="Device Name"
+        placeholderTextColor="#64748b"
         value={deviceName}
         onChangeText={setDeviceName}
+        selectionColor="#0f766e"
+        cursorColor="#0f766e"
+        underlineColorAndroid="transparent"
       />
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -110,6 +118,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     backgroundColor: "white",
+    color: "#0f172a",
     marginBottom: 12
   },
   button: {

@@ -12,6 +12,7 @@ import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "expo-router";
 import { api } from "@/convex/_generated/api";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { convexConfigErrorMessage, isConvexConfigured } from "@/services/convexClient";
 import { formatTimestamp } from "@/utils/time";
 
 function secondsToLabel(seconds: number) {
@@ -24,8 +25,16 @@ export default function AdminDashboardScreen() {
   const router = useRouter();
   const { loading, isAuthenticated, signOut } = useAdminAuth();
 
-  const devices = useQuery(api.devices.listDevices, {});
-  const presets = useQuery(api.settings.getAdminSettings, {}) ?? [3600, 10800, 18000];
+  const devices = useQuery(
+    api.devices.listDevices,
+    isConvexConfigured ? {} : "skip"
+  );
+  const presets = useQuery(
+    api.settings.getAdminSettings,
+    isConvexConfigured ? {} : "skip"
+  ) ?? [3600, 10800, 18000];
+  const safeDevices = Array.isArray(devices) ? devices : [];
+  const safePresets = Array.isArray(presets) ? presets : [3600, 10800, 18000];
   const createCode = useMutation(api.pairing.createPairingCode);
   const startSession = useMutation(api.sessions.startSession);
   const extendSession = useMutation(api.sessions.extendSession);
@@ -50,6 +59,10 @@ export default function AdminDashboardScreen() {
 
   const onGeneratePairCode = async () => {
     if (isGeneratingPairCode) return;
+    if (!isConvexConfigured) {
+      setPairingError(convexConfigErrorMessage);
+      return;
+    }
     setIsGeneratingPairCode(true);
     try {
       setPairingError(null);
@@ -67,6 +80,10 @@ export default function AdminDashboardScreen() {
     sessionId?: string;
     seconds: number;
   }) => {
+    if (!isConvexConfigured) {
+      setActionError(convexConfigErrorMessage);
+      return;
+    }
     try {
       setActionError(null);
       if (args.sessionId) {
@@ -86,6 +103,7 @@ export default function AdminDashboardScreen() {
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Pair New Device</Text>
+        {!isConvexConfigured ? <Text style={styles.error}>{convexConfigErrorMessage}</Text> : null}
         <Pressable
           style={[styles.primaryButton, isGeneratingPairCode && styles.buttonDisabled]}
           onPress={onGeneratePairCode}
@@ -111,14 +129,18 @@ export default function AdminDashboardScreen() {
           value={customMinutes}
           onChangeText={setCustomMinutes}
           placeholder="minutes"
+          placeholderTextColor="#64748b"
+          selectionColor="#0f766e"
+          cursorColor="#0f766e"
+          underlineColorAndroid="transparent"
         />
       </View>
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Devices</Text>
         {actionError ? <Text style={styles.error}>{actionError}</Text> : null}
-        {!devices ? <Text style={styles.meta}>Loading devices...</Text> : null}
-        {devices?.map((device: any) => (
+        {!Array.isArray(devices) ? <Text style={styles.meta}>Loading devices...</Text> : null}
+        {safeDevices.map((device: any) => (
           <View style={styles.deviceRow} key={device._id}>
             <Text style={styles.deviceName}>{device.name}</Text>
             <Text style={styles.meta}>
@@ -132,7 +154,7 @@ export default function AdminDashboardScreen() {
             </Text>
 
             <View style={styles.actions}>
-              {presets.map((seconds: number) => (
+              {safePresets.map((seconds: number) => (
                 <Pressable
                   key={`${device._id}-${seconds}`}
                   style={styles.quickButton}
@@ -238,6 +260,7 @@ const styles = StyleSheet.create({
     borderColor: "#94a3b8",
     borderRadius: 10,
     backgroundColor: "white",
+    color: "#0f172a",
     paddingHorizontal: 12,
     paddingVertical: 10
   },

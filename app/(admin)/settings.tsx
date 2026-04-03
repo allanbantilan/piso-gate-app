@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { convexConfigErrorMessage, isConvexConfigured } from "@/services/convexClient";
 import { getPresets, updatePresets } from "@/services/settingsService";
 
 function parseMinutesInput(value: string) {
@@ -58,6 +59,10 @@ export default function AdminSettingsScreen() {
 
   const onSave = async () => {
     if (isSaving) return;
+    if (!isConvexConfigured) {
+      setError(convexConfigErrorMessage);
+      return;
+    }
     setIsSaving(true);
     setError(null);
     setStatus(null);
@@ -99,6 +104,10 @@ export default function AdminSettingsScreen() {
               keyboardType="numeric"
               value={value}
               onChangeText={(text) => setPresetAt(index, text)}
+              placeholderTextColor="#64748b"
+              selectionColor="#0f766e"
+              cursorColor="#0f766e"
+              underlineColorAndroid="transparent"
             />
             <Pressable style={styles.removeButton} onPress={() => removePreset(index)}>
               <Text style={styles.removeButtonText}>Remove</Text>
@@ -119,13 +128,18 @@ export default function AdminSettingsScreen() {
         <TextInput
           style={styles.input}
           placeholder="Leave blank to keep current PIN"
+          placeholderTextColor="#64748b"
           value={pin}
           onChangeText={setPin}
           secureTextEntry
           keyboardType="number-pad"
+          selectionColor="#0f766e"
+          cursorColor="#0f766e"
+          underlineColorAndroid="transparent"
         />
       </View>
 
+      {!isConvexConfigured ? <Text style={styles.error}>{convexConfigErrorMessage}</Text> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
       {status ? <Text style={styles.status}>{status}</Text> : null}
 
@@ -188,6 +202,7 @@ const styles = StyleSheet.create({
     borderColor: "#94a3b8",
     borderRadius: 10,
     backgroundColor: "white",
+    color: "#0f172a",
     paddingHorizontal: 12,
     paddingVertical: 10
   },

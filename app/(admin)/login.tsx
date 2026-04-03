@@ -22,6 +22,8 @@ export default function AdminLoginScreen() {
         return;
       }
       router.replace("/(admin)/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to login right now");
     } finally {
       setSubmitting(false);
     }
@@ -34,10 +36,14 @@ export default function AdminLoginScreen() {
         <TextInput
           style={styles.input}
           placeholder="Enter PIN"
+          placeholderTextColor="#64748b"
           value={pin}
           onChangeText={setPin}
           keyboardType="number-pad"
           secureTextEntry
+          selectionColor="#0f766e"
+          cursorColor="#0f766e"
+          underlineColorAndroid="transparent"
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Pressable style={styles.button} onPress={onLogin}>
@@ -72,6 +78,7 @@ const styles = StyleSheet.create({
     borderColor: "#94a3b8",
     borderRadius: 10,
     backgroundColor: "white",
+    color: "#0f172a",
     paddingHorizontal: 12,
     paddingVertical: 10
   },
