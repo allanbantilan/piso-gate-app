@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Piso Gate",
+    "slug": "piso-gate-app",
+    "scheme": "pisogate",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
