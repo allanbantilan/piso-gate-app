@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 import { registerDevice } from "@/services/deviceService";
+import { ADMIN_LONG_PRESS_MS } from "@/constants/config";
 
 export default function PairScreen() {
   const router = useRouter();
@@ -26,6 +27,13 @@ export default function PairScreen() {
 
   return (
     <View style={styles.container}>
+      <Pressable
+        style={styles.adminTopButton}
+        onPress={() => router.push("/(admin)/login")}
+      >
+        <Text style={styles.adminTopButtonText}>Admin Login</Text>
+      </Pressable>
+
       <Text style={styles.title}>Pair Device</Text>
       <Text style={styles.subtitle}>Enter the code from Admin Dashboard</Text>
 
@@ -48,6 +56,12 @@ export default function PairScreen() {
       <Pressable style={styles.button} onPress={onSubmit} disabled={submitting}>
         <Text style={styles.buttonText}>{submitting ? "Pairing..." : "Pair Device"}</Text>
       </Pressable>
+
+      <Pressable
+        style={styles.hiddenHitbox}
+        delayLongPress={ADMIN_LONG_PRESS_MS}
+        onLongPress={() => router.push("/(admin)/login")}
+      />
     </View>
   );
 }
@@ -88,6 +102,30 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "600"
+  },
+  adminTopButton: {
+    alignSelf: "flex-end",
+    marginBottom: 14,
+    minHeight: 40,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "#cbd5e1",
+    backgroundColor: "#ffffff",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  adminTopButtonText: {
+    color: "#0f172a",
+    fontWeight: "600",
+    fontSize: 13
+  },
+  hiddenHitbox: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 80,
+    height: 80
   },
   error: {
     color: "#b91c1c",
